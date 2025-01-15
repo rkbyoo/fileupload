@@ -1,6 +1,10 @@
 const express=require("express")
 const app=express()
 
+//installing file upload middleware for uploading files
+const fileupload=require("express-fileupload")
+app.use(fileupload())
+
 //importing the .env here and also adding middleware
 require("dotenv").config()
 app.use(express.json())
@@ -21,7 +25,7 @@ const connectDb=require("./config/database")
 connectDb()
 
 const connectCloud=require("./config/cloudinary")
-connectCloud()
+connectCloudinary.connectCloud()
 
 //lets import the routes 
 const fileroute=require("./routes/fileroute")
