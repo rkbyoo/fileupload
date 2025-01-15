@@ -1,5 +1,6 @@
 const express=require("express")
 const app=express()
+const cloudinary=require("cloudinary")
 
 //installing file upload middleware for uploading files
 const fileupload=require("express-fileupload")
@@ -21,11 +22,11 @@ app.get("/",(req,res)=>{
 
 
 //lets connect the database
-const connectDb=require("./config/database")
+const {connectDb}=require("./config/database")
 connectDb()
 
-const connectCloud=require("./config/cloudinary")
-connectCloudinary.connectCloud()
+const {connectCloudinary}=require("./config/cloudinary")
+connectCloudinary()
 
 //lets import the routes 
 const fileroute=require("./routes/fileroute")

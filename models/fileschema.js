@@ -2,19 +2,19 @@ const mongoose=require("mongoose")
 
 const fileSchema=mongoose.Schema({
     name:{
-        type:string,
+        type:String,
         required:true
     },
     imageUrl:{
-        type:string,
+        type:String,
         required:true
     },
     tags:{
-        type:string,
+        type:String,
         required:false
     },
     email:{
-        type:string,
+        type:String,
         required:true
     }
     

@@ -10,6 +10,8 @@ exports.connectCloudinary=()=>{
             api_secret: process.env.API_SECRET ,
             secure: true,
           }); 
+
+          console.log("connected with cloudinary")
     } catch (error) {
         console.log("some error while connecting to cloud database")
         console.error(error)
