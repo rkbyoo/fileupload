@@ -4,7 +4,10 @@ const cloudinary=require("cloudinary")
 
 //installing file upload middleware for uploading files
 const fileupload=require("express-fileupload")
-app.use(fileupload())
+app.use(fileupload({
+    useTempFiles : true,
+    tempFileDir : '/tmp/'
+}))
 
 //importing the .env here and also adding middleware
 require("dotenv").config()
