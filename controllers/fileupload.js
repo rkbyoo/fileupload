@@ -35,11 +35,12 @@ exports.localFileUpload=async(req,res)=>{
 
 //function to upload the file to cloudinary
 const uploadFileToCloudinary=async(file,folder)=>{
-    const options={folder}
-    console.log(options)
-    return await cloudinary.uploader.upload(file.tempFilePath,options)
+    console.log({folder})
+    return await cloudinary.uploader.upload(file.tempFilePath,{folder})
     //it will fetch the file from tempfilepath location and upload it to the desired folder (option) in the cloud
 }
+
+
 //image upload handler
 
 exports.imageUpload=async(req,res)=>{
@@ -62,18 +63,26 @@ exports.imageUpload=async(req,res)=>{
         })
         
     } 
-    const response=await uploadFileToCloudinary(imageFile,"codehelp") //filename and the folder where i want to save the file in cloudinary
+    const response=await uploadFileToCloudinary(imageFile,'codehelp')
+     //filename and the folder where i want to save the file in cloudinary
+    console.log(response)
 
     // saving the entry into DB
-    // const fileData=await File.create({name,
-    //     email,
-    //     tags,
-    //     imageUrl
-    // })
-    res.status(200).json({
-        success:true,
-        message:"File is uploaded successfully"
-    })
+    try {
+        const imageData=await File.create({name,
+            email,
+            tags,
+            imageUrl:response.secure_url
+        })
+        res.status(200).json({
+            success:true,
+            message:"File is uploaded successfully"
+            ,data:imageData
+        })
+    } catch (error) {
+     console.error("not able to upload in the database",error)   
+    }
+    
     } catch (error) {
         console.error(error)
         res.status(500).json({
