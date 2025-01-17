@@ -7,7 +7,7 @@ const fileSchema=mongoose.Schema({
     },
     imageUrl:{
         type:String,
-        required:true
+        required:false
     },
     tags:{
         type:String,
@@ -16,8 +16,11 @@ const fileSchema=mongoose.Schema({
     email:{
         type:String,
         required:true
+    },
+    videoUrl:{
+        type:String,
+        required:false
     }
-    
 })
 
 module.exports=mongoose.model("File",fileSchema)

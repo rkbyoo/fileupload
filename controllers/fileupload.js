@@ -36,7 +36,11 @@ exports.localFileUpload=async(req,res)=>{
 //function to upload the file to cloudinary
 const uploadFileToCloudinary=async(file,folder,quality=100)=>{
     console.log({folder,quality})
-    return await cloudinary.uploader.upload(file.tempFilePath,{folder,quality})
+
+    //i have set resource_type to auto to auto detect the file type while uploading else it is set to image by default
+    return await cloudinary.uploader.upload(file.tempFilePath,{folder,quality,resource_type:"auto"})
+
+
     //it will fetch the file from tempfilepath location and upload it to the desired folder (which is in object format) in the cloud cz it accepts value like {folder:'codehelp',quality:30} here the quality is scaled on 10 to 100
 }
 
@@ -96,7 +100,60 @@ exports.imageUpload=async(req,res)=>{
 
 //video upload handler
 exports.videoUpload=async(req,res)=>{
-    
+
+    try {
+    //fetching data from req
+    const videoFile=req.files.videoFile
+    console.log(videoFile)
+    const{name,email,tags}=req.body
+    console.log(name,email,tags)
+
+    //validation on video type
+    let videoTypes=["mov","mp4"]
+    const fileType=videoFile.name.split(".")[1].toLowerCase()
+    console.log("File type is :",fileType)
+    if(!videoTypes.includes(fileType))
+    {
+        return res.status(400).json({
+            success:false,
+            message:"Invalid format"
+        })
+    }
+    //lets save it in cloudinary
+    try {
+        const response=await uploadFileToCloudinary(videoFile,'codehelp')
+        console.log("this is response from cloudinary",response)
+        //saving it in db
+        const fileData=await File.create({
+            name,
+            email,
+            tags,
+            videoUrl:response.secure_url
+        })
+        return res.status(200).json({
+            success:true,
+            message:"The file is successfully uploaded",
+            fileData:fileData
+        })
+    } catch (error) {
+        console.log("some error occured while uploading",error)
+        return res.status(400).json({
+            success:false,
+            message:"some uploading issues"
+        })
+    }
+ 
+
+    } catch (error) {
+        console.error("some internal server error",error)
+        return res.status(500).json({
+            success:false,
+            message:"Internal server error"
+        })
+    }
+
+
+
 }
 
 //image upload by reducing its size 
