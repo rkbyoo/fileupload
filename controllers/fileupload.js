@@ -38,7 +38,7 @@ const uploadFileToCloudinary=async(file,folder,quality=100)=>{
     console.log({folder,quality})
 
     //i have set resource_type to auto to auto detect the file type while uploading else it is set to image by default
-    return await cloudinary.uploader.upload(file.tempFilePath,{folder,quality,resource_type:"auto"})
+    return await cloudinary.uploader.upload(file.tempFilePath,{folder,quality,resource_type:"auto",height:30})
 
 
     //it will fetch the file from tempfilepath location and upload it to the desired folder (which is in object format) in the cloud cz it accepts value like {folder:'codehelp',quality:30} here the quality is scaled on 10 to 100
@@ -121,7 +121,7 @@ exports.videoUpload=async(req,res)=>{
     }
     //lets save it in cloudinary
     try {
-        const response=await uploadFileToCloudinary(videoFile,'codehelp')
+        const response=await uploadFileToCloudinary(videoFile,'codehelp',50)
         console.log("this is response from cloudinary",response)
         //saving it in db
         const fileData=await File.create({
