@@ -1,5 +1,5 @@
 const File=require("../models/fileschema")
-const cloudinary=require("cloudinary")
+const cloudinary=require("cloudinary").v2
 
 
 exports.localFileUpload=async(req,res)=>{
@@ -34,10 +34,10 @@ exports.localFileUpload=async(req,res)=>{
 
 
 //function to upload the file to cloudinary
-const uploadFileToCloudinary=async(file,folder)=>{
-    console.log({folder})
-    return await cloudinary.uploader.upload(file.tempFilePath,{folder})
-    //it will fetch the file from tempfilepath location and upload it to the desired folder (option) in the cloud
+const uploadFileToCloudinary=async(file,folder,quality=100)=>{
+    console.log({folder,quality})
+    return await cloudinary.uploader.upload(file.tempFilePath,{folder,quality})
+    //it will fetch the file from tempfilepath location and upload it to the desired folder (which is in object format) in the cloud cz it accepts value like {folder:'codehelp',quality:30} here the quality is scaled on 10 to 100
 }
 
 
@@ -90,4 +90,60 @@ exports.imageUpload=async(req,res)=>{
             message:"something went wrong while uplading the image"
         })
     }
+}
+
+
+
+//video upload handler
+exports.videoUpload=async(req,res)=>{
+    
+}
+
+//image upload by reducing its size 
+
+exports.imageReduceUpload=async(req,res)=>{
+    try {
+        const imageFile=req.files.imageFile
+        const {name,email,tags}=req.body
+        console.log("this is my image file",imageFile)
+        //validation on image file 
+        const imgTypes=["jpeg","jpg","png"]
+        const fileType=imageFile.name.split('.')[1].toLowerCase()
+        console.log("this is my image type:",fileType)
+        if(!imgTypes.includes(fileType)){
+            return res.status(400).json({
+                success:false,
+                message:"The required File Type is missing"
+            })
+        }
+        const response=await uploadFileToCloudinary(imageFile,'codehelp',60)
+        console.log("this is the response from uploading at cloudinary",response)
+
+        try {
+             //lets make a entry in the db 
+        const fileData=await File.create({
+            name,
+            email,
+            tags,
+            imageUrl:response.secure_url
+        })
+        return res.status(200).json({
+            success:true,
+            message:"File is uploaded successfully with compression",
+            data:fileData
+        })
+        } catch (error) {
+            console.error("some error occured while saving in database",error)
+        }
+       
+        
+    } catch (error) {
+        console.error("some internal server error while uploading the image",error)
+        res.status(500).json({
+            success:false,
+            message:"some internal server error"
+        })
+    }
+   
+
 }

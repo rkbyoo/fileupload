@@ -10,7 +10,7 @@ const {imageUpload,videoUpload,imageReduceUpload,localFileUpload}=require("../co
 //routes for the server are declared here
 router.post("/localfileupload",localFileUpload)
 router.post("/uploadimage",imageUpload)
-
+router.post("/imageReduceUpload",imageReduceUpload)
 
 
 module.exports=router
