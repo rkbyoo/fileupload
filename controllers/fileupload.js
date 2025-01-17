@@ -36,9 +36,12 @@ exports.localFileUpload=async(req,res)=>{
 //function to upload the file to cloudinary
 const uploadFileToCloudinary=async(file,folder,quality=100)=>{
     console.log({folder,quality})
-
+    // i can pass down height as a object beside as well to change the dimensions
+    
     //i have set resource_type to auto to auto detect the file type while uploading else it is set to image by default
-    return await cloudinary.uploader.upload(file.tempFilePath,{folder,quality,resource_type:"auto",height:30})
+    return await cloudinary.uploader.upload(file.tempFilePath,{folder,quality,resource_type:"auto"})
+
+
 
 
     //it will fetch the file from tempfilepath location and upload it to the desired folder (which is in object format) in the cloud cz it accepts value like {folder:'codehelp',quality:30} here the quality is scaled on 10 to 100
